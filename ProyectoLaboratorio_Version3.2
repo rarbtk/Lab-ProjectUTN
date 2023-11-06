@@ -1,0 +1,1190 @@
+Algoritmo ProyectoLaboratorio
+	Definir OpcUsuario,cont1,cont2,flags,i,j,intentosfallidos,ID,ID_bloqueo,Dinero,flag, Historial Como Entero
+	Definir DNIUsuario, Matriz como cadena
+	Definir Contraseña,salir como cadena
+	
+	salir<-'999'
+	
+	Dimension Matriz[99,8]
+	Dimension Dinero[99]
+	Dimension Historial[99,20]
+	
+	Para i<-0 Hasta 98 Con Paso 1 Hacer
+		Dinero[i]<-0
+	Fin Para
+	
+	Para i<-1 Hasta 98 Con Paso 1 Hacer
+		para j<-0 hasta 19 Con Paso 1 Hacer
+			Historial[i,j] <- 0
+		FinPara
+	Fin Para
+	
+	//Posicion [0] es el ID.
+	//Posicion [1] nombre del usuario.
+	//Posicion [2] apellido del usuario.
+	//Posicion [3] DNI (tambien se cuenta como el nombre de usuario).
+	//Posicion [4] contraseña del usuario.
+	//Posicion [5] cantidad de dinero en pesos.
+	//Posicion [6] estado del usuario (1) para activo y (0) para bloqueado.
+	//Posicion [7] historial del usuario, valores negativos, cuenta cómo envio de dinero o pago de servicio.
+	//Valores positivos indican el ingreso de dinero.
+	
+	//Linea 754 funcion transferencias.
+	
+	//Hay algo que esta rompiendo en el cambio de estado tiene que ver con el bucle while.
+	
+	//ADMIN
+	Matriz[0,0]<-["0"]
+	Matriz[0,1]<-["ADMIN"]
+	Matriz[0,2]<-["ADMIN"]
+	Matriz[0,3]<-["ADMIN"]
+	Matriz[0,4]<-["ADMIN"]
+	Matriz[0,5]<-["000000"]
+	Matriz[0,6]<-["1"]
+	Matriz[0,7]<- [["0"]]
+	Dinero[0]<-0
+	
+	//USUARIO
+	Matriz[1,0]<-["1"]
+	Matriz[1,1]<-["Enzo"]
+	Matriz[1,2]<-["Olmedo"]
+	Matriz[1,3]<-["39159718"]
+	Matriz[1,4]<-["fluminense2-1"]
+	Matriz[1,5]<-["100000"]
+	Matriz[1,6]<-["1"]
+	Matriz[1,7]<- ["0"]
+	Dinero[1]<-100000
+	
+	Matriz[2,0]<-["2"]
+	Matriz[2,1]<-["Daiana"]
+	Matriz[2,2]<-["Veliz"]
+	Matriz[2,3]<-["36074209"]
+	Matriz[2,4]<-["dai123"]
+	Matriz[2,5]<-["200000"]
+	Matriz[2,6]<-["1"]
+	Matriz[2,7]<- [["0"]]
+	Dinero[2]<-200000
+	
+	Matriz[3,0]<-["3"]
+	Matriz[3,1]<-["Ingrid"]
+	Matriz[3,2]<-["Oviedo"]
+	Matriz[3,3]<-["45235990"]
+	Matriz[3,4]<-["170114"]
+	Matriz[3,5]<-["150000"]
+	Matriz[3,6]<-["1"]
+	Matriz[3,7]<- [["0"]]
+	Dinero[3]<-150000
+	
+	Matriz[4,0]<-["4"]
+	Matriz[4,1]<-["Ricardo"]
+	Matriz[4,2]<-["Rodriguez"]
+	Matriz[4,3]<-["95791114"]
+	Matriz[4,4]<-["1234"]
+	Matriz[4,5]<-["350000"]
+	Matriz[4,6]<-["1"]
+	Matriz[4,7]<- [["0"]]
+	Dinero[4]<-350000
+	
+	Matriz[5,0]<-["5"]
+	Matriz[5,1]<-["Eladio"]
+	Matriz[5,2]<-["Martinez"]
+	Matriz[5,3]<-["34532113"]
+	Matriz[5,4]<-["eladio12"]
+	Matriz[5,5]<-["11000"]
+	Matriz[5,6]<-["0"]
+	Matriz[5,7]<- [["0"]]
+	Dinero[5]<-11000
+	
+	//En este ciclo se llenan los 99 espacios para los usuarios, usando zxz como cada una de las propiedas...
+	//...esto quiere decir que para las posiciones en el array que no tienen un usuario registrado su nombre...
+	//...apellido, etc, será "zxz".
+	Para i<-6 Hasta 98 Con Paso 1 Hacer
+		Para j<-0 Hasta 7 Con Paso 1 Hacer
+			Matriz[i,j] <- "zxz"
+		Fin Para
+	Fin Para
+
+	Repetir
+		Limpiar Pantalla
+		Esperar Tecla
+		CARTEL2_0() 
+		OpcUsuario<-6
+		CARTEL()
+		Escribir ''
+		Escribir ''
+		Repetir
+			Escribir '                               'Sin Saltar
+			Escribir 'Ingrese su DNI'
+			Escribir '                               'Sin Saltar
+			Leer DNIUsuario
+			Escribir '                               'Sin Saltar
+			Escribir 'Ingrese su contraseña'
+			Escribir '                               'Sin Saltar
+			Leer Contraseña
+	
+			cont1<-0
+			cont2<-0
+			Para i<-0 Hasta 98 Con Paso 1 Hacer
+				Si Matriz[i,3]==DNIUsuario Entonces
+					cont1<-cont1+1
+					ID<-i
+				FinSi
+				Si Matriz[i,4]==Contraseña Entonces
+					cont2<-cont2+1
+				Fin Si
+			Fin Para
+			
+			Si cont1==0 Entonces
+				CARTEL()
+				Escribir ''
+				Escribir '                               'Sin Saltar
+				Escribir '<<<<Usuario Incorrecto>>>>'
+			Fin Si
+		Hasta Que cont1==1 
+		
+		flags<-1
+		Si cont1==1 y cont2==1 Entonces
+			flag<-0
+			OpcUsuario<-0
+			Si (Matriz[ID,6]=='0') Entonces
+				CARTEL()
+				Escribir '                               'Sin Saltar
+				Escribir '¡¡¡¡¡PIN BLOQUEADO!!!!!'
+				Escribir '                               'Sin Saltar
+				Escribir '<<<<Usuario Incorrecto>>>>'
+				intentosfallidos  <- 1
+				flags<-1
+			FinSi
+		Fin Si
+	
+		intentosfallidos<-1
+		
+		Mientras flags==1 y Contraseña<>salir Hacer
+			
+			Si (Matriz[ID,6]=='0') Entonces
+				CARTEL()
+				Escribir '                               'Sin Saltar
+				Escribir '¡¡¡¡¡PIN BLOQUEADO!!!!!'
+				Escribir '                               'Sin Saltar
+				Escribir '<<<<Usuario Incorrecto>>>>'
+				intentosfallidos  <- 1
+				flags<-1
+				Esperar Tecla
+			SiNo
+				Si cont1<>1 o cont2<>1 Entonces
+					CARTEL()
+					Escribir ''
+					Escribir '                               'Sin Saltar
+					Escribir '<<<<Usuario Incorrecto>>>>'
+					Si Matriz[ID,3]==DNIUsuario Entonces
+						intentosfallidos<-intentosfallidos + 1
+						Si intentosfallidos>=3 Entonces
+							Matriz[ID,6]<-'0'
+						Fin Si
+					Fin Si
+				Fin Si
+			FinSi
+			
+			Si cont1==1 y cont2==1 y Matriz[ID,6]=='1' Entonces
+				flags<-0
+				OpcUsuario<-0
+				intentosfallidos  <- 1
+			SiNo
+				Repetir
+					Escribir '                               'Sin Saltar
+					Escribir 'Ingrese su DNI'
+					Escribir '                               'Sin Saltar
+					Leer DNIUsuario
+					Escribir '                               'Sin Saltar
+					Escribir 'Ingrese su contraseña'
+					Escribir '                               'Sin Saltar
+					Leer Contraseña
+					cont1<-0
+					cont2<-0
+					ID<--1
+					Para i<-0 Hasta 98 Con Paso 1 Hacer
+						Si Matriz[i,3]==DNIUsuario Entonces
+							cont1<-cont1+1
+							ID<-i
+						FinSi
+						Si Matriz[i,4]==Contraseña Entonces
+							cont2<-cont2+1
+						Fin Si
+					Fin Para
+					Si cont1==0 Entonces
+						CARTEL()
+						Escribir ''
+						Escribir '                               'Sin Saltar
+						Escribir '<<<<Usuario Incorrecto>>>>'
+					Fin Si
+				Hasta Que cont1==1
+			Fin Si
+				
+		Fin Mientras
+		flags<-0
+		intentosfallidos<-1
+		
+		Mientras OpcUsuario <>6 y Matriz[ID,6]=='1' Hacer
+			Repetir
+				Si Matriz[ID,0] == "0" Entonces
+					Mientras OpcUsuario <>6 Hacer
+						Repetir
+							MENU_ADMIN()
+							Leer OpcUsuario
+						Hasta Que OpcUsuario>=1 y OpcUsuario<=6
+						
+						Si OpcUsuario <> 6 Entonces
+							OPCIONES_ADMIN(Matriz,OpcUsuario,Dinero,Historial)
+							
+							Escribir ' -----------------------------------------------------------'
+							Escribir 'Presione (1) para regresar al menu anterior o (6) para salir' Sin Saltar
+							Leer OpcUsuario
+						FinSi
+					Fin Mientras
+				SiNo
+					MENU()
+					
+					Escribir ''Sin Saltar
+					Leer OpcUsuario
+					Escribir ''
+				Fin Si
+			Hasta Que OpcUsuario>=1 y OpcUsuario<=6
+			Segun OpcUsuario Hacer
+				1:
+					Repetir
+						VisualizarDatos(Matriz,Dinero,ID)                            //Funcion de Mostrar datos de usuario
+						Escribir 'Presione (1) para el MENU PRINCIPAL: 'Sin Saltar
+						Leer OpcUsuario
+					Hasta Que OpcUsuario==1
+				2:
+					INGRESAR_DINERO(Dinero,ID,Historial)        //Funcion para ingresar dinero
+				3:
+					EXTRAER_DINERO(Dinero,ID,Historial)   	    //Funcion para extraer dinero
+				4:
+					TRANSFERENCIAS(Matriz,Dinero,ID,Historial) 	//Funcion para transferencias
+				5:  
+					HISTORIAL_USUARIO(Historial,ID,Dinero)      //Funcion de historial
+			Fin Segun
+		Fin Mientras
+	Hasta Que Contraseña==salir
+	
+FinAlgoritmo
+
+
+//Menu del usuario ADMINISTRADOR
+
+SubProceso MENU_ADMIN()
+	Limpiar Pantalla
+	Escribir ' -------------------------------------------------------------------------------------------------'
+	Escribir '^.................................................................................................'
+	Escribir '^    '
+	Escribir '^ |  \/  |                      /\      | |         (_)     (_)   | |               | |'          
+	Escribir '^ | \  / | ___ _ __  _   _     /  \   __| |_ __ ___  _ _ __  _ ___| |_ _ __ __ _  __| | ___  _ __ .' 
+	Escribir '^ | |\/| |/ _ \ ^_ \| | | |   / /\ \ / _` | ^_ ` _ \| | ^_ \| / __| __| ^__/ _` |/ _` |/ _ \| ^__|.'
+	Escribir '^ | |  | |  __/ | | | |_| |  / ____ \ (_| | | | | | | | | | | \__ \ |_| | | (_| | (_| | (_) | |   .'   
+	Escribir '^ |_|  |_|\___|_| |_|\__,_| /_/    \_\__,_|_| |_| |_|_|_| |_|_|___/\__|_|  \__,_|\__,_|\___/|_|   .'   
+	Escribir '^                                                                                                 .'
+	Escribir '^..................................................................................................'Sin Saltar
+	Escribir '                           '
+	Escribir '^                                                                                                 .'
+	Escribir '^.----.----.----.----.----.----.----.----.----.----.----.----.----.----.----.----.----.----.----.  '
+	Escribir '^             ,.._.._...._...._.._,                         ,.._.._...._...._.._,                  '
+	Escribir '^             [1] Listar usuarios'Sin Saltar
+	Escribir '                          'Sin Saltar
+	Escribir ' [2] Agregar usuario                  '
+	Escribir '^             ,_.._...._...._.._..,                         ,_.._...._...._.._..,                  '
+	Escribir '^                                                                                                  '
+	Escribir '^             ,.._.._...._...._.._,                         ,.._.._...._...._.._.._,               '
+	Escribir '^             [3] Bloquear usuario'Sin Saltar
+	Escribir '                         'Sin Saltar
+	Escribir ' [4] Historial de usuario          '
+	Escribir '^             ,_.._...._...._.._..,                         ,_.._.._...._...._.._..,               '
+	Escribir '^'
+	Escribir '^             ,.._.._...._...._.._,                         ,.._.._...._...._,                     '
+	Escribir '^             [5] Editar usuario'Sin Saltar
+	Escribir '                           'Sin Saltar
+	Escribir ' [6] Salir                        '
+	Escribir '^             ,_.._...._...._.._..,                         ,_...._...._.._..,                     '
+	Escribir '^.----.----.----.----.----.----.----.----.----.----.----.----.----.----.----.----.----.----.----.  '
+	Escribir ' ------------------------------------------------------------------------------------------------- '
+	Escribir ''
+FinSubProceso
+
+//OPCIONES DE USUARIO ADMINISTADOR
+SubProceso OPCIONES_ADMIN(Matriz,OpcUsuario,Dinero,Historial)
+	
+	//La variable ID_DESBLOQUEAR se usa para identificar el usuario a cambiar su estado
+	DEFINIR i,j,k,Z, flag, ID_DESBLOQUEAR, LONGITUD_USUARIOS_REGISTRADOS, CAMBIO_ESTADO,OPCION_A_MODIFICAR, ID_HISTORIAL Como Entero
+	// las variables longitud se usan para validar el largo
+	DEFINIR LONGITUD_NOMBRE, LONGITUD_APELLIDO, LONGITUD_DNI, LONGITUD_CONTRASENA,mal_dato  Como Entero
+	//DEFINIR OPCION_A_MODIFICAR Como Entero
+	DEFINIR NUEVO_ID, NUEVO_NOMBRE, NUEVO_APELLIDO, NUEVO_DNI,NUEVA_CONTRASENA,ESTADO,CONFIRMAR_CONTRASENA, validador, CUENTA_PESOS_CARACTER Como Caracter
+	Definir CUENTA_PESOS Como Real
+	
+	Segun OpcUsuario Hacer
+		1:
+			//Opción para listar usuario, listara los usuarios cuyo ID sea diferente a "zxz".
+			Limpiar Pantalla
+			Para i<-1 Hasta 98 Con Paso 1 Hacer
+				SI Matriz[i,0] <> "zxz" Y Matriz[i,6] == "1" Entonces
+					Escribir '----------------------------------------------------------------------------------------------'
+					Escribir ' ..----.----.----.----.----.----.----.----.----.----.----.----.----.----.----.----.----.----..'
+					Escribir 'ID: ' Matriz[i,0] ' Nombre completo: ' Matriz[i,1] ' ' Matriz[i,2] ' DNI: ' Matriz[i,3]  ' Cuenta Pesos: $' Dinero[i] ' Contrasena: ' Matriz[i,4]
+					Escribir ' ..----.----.----.----.----.----.----.----.----.----.----.----.----.----.----.----.----.----..'
+				FinSi
+			Fin Para
+		2:
+			//OPCIÓN 2 PARA CREAR USUARIO
+			Limpiar Pantalla
+			Para i<-1 Hasta 98 Con Paso 1 Hacer
+				SI Matriz[i,0] == "zxz" Entonces
+					NUEVO_ID <- ConvertirATexto(i)
+					Matriz[i,0] <- NUEVO_ID
+					Limpiar Pantalla
+					Escribir '                             'Sin Saltar
+					Escribir ' -----------------------------------'Sin Saltar
+					Escribir '                              '
+					Escribir '                             'Sin Saltar
+					Escribir '|<<<<<<----Agregar Usuario---->>>>>>|'Sin Saltar
+					Escribir '                              '
+					Escribir '                             'Sin Saltar
+					Escribir ' -----------------------------------'
+					Escribir '                              '
+										
+					Repetir
+						Escribir '                              'Sin saltar
+						Escribir '[1] Ingrese el Nombre: '
+						Escribir '                             'Sin Saltar
+						Leer NUEVO_NOMBRE
+						LONGITUD_NOMBRE <- Longitud(NUEVO_NOMBRE)
+						SI LONGITUD_NOMBRE >=3 Entonces
+							Matriz[i,1] <- NUEVO_NOMBRE
+						SINO
+							Escribir '                              'Sin saltar
+							Escribir "El nombre del usuario debe tener al menos 3 caracteres"	
+						FinSi
+						
+						mal_dato <- 0
+						Para Z<-0 Hasta LONGITUD_NOMBRE Con Paso 1 Hacer
+							validador <- Subcadena(NUEVO_NOMBRE,Z,1)
+							si validador == "0" o validador == "1" o validador == "2" o validador == "3" o validador == "4" o validador == "5" o validador == "6" o validador == "7" o validador == "8" o validador == "9" o validador == " " entonces
+								mal_dato <-1
+							FinSi
+							
+						Fin Para
+						Si mal_dato == 1 Entonces
+							Escribir '                              'Sin saltar
+							Escribir "Los nombres no deben tener numeros ni espacios"	
+						FinSi
+						
+					Hasta Que LONGITUD_NOMBRE > 3 Y mal_dato < 1
+
+					Repetir
+						Escribir '                              'Sin saltar
+						Escribir '[2] Ingrese el Apellido: '
+						Escribir '                             'Sin Saltar
+						Leer NUEVO_APELLIDO
+						LONGITUD_APELLIDO <- Longitud(NUEVO_APELLIDO)
+						
+						SI LONGITUD_APELLIDO >=3 Entonces
+							Matriz[i,2] <- NUEVO_APELLIDO
+						SINO
+							Escribir '                              'Sin saltar
+							Escribir "El apellido del usuario debe tener al menos 3 caracteres"	
+						FinSi
+						
+						mal_dato <- 0
+						Para Z<-0 Hasta LONGITUD_APELLIDO Con Paso 1 Hacer
+							validador <- Subcadena(NUEVO_APELLIDO,Z,1)
+							si validador == "0" o validador == "1" o validador == "2" o validador == "3" o validador == "4" o validador == "5" o validador == "6" o validador == "7" o validador == "8" o validador == "9" entonces
+								mal_dato <-1
+							FinSi
+							
+						Fin Para
+						Si mal_dato == 1 Entonces
+							Escribir '                              'Sin saltar
+							Escribir "Los apellidos no deben tener numeros ni espacios"	
+						FinSi
+						
+					Hasta Que LONGITUD_APELLIDO > 3 Y mal_dato < 1
+					
+					
+					Matriz[i,2] <- NUEVO_APELLIDO
+					
+					Repetir
+						Escribir '                              'Sin saltar
+						Escribir '[3] Ingrese el DNI: '
+						Escribir '                             'Sin Saltar
+						Leer NUEVO_DNI
+						LONGITUD_DNI <- Longitud(NUEVO_DNI)
+						mal_dato <- 0
+
+						SI LONGITUD_DNI > 5 y LONGITUD_DNI < 9 Entonces
+							Para Z<-1 Hasta 98 Con Paso 1 Hacer
+								si Matriz[Z,3] == NUEVO_DNI Entonces
+									mal_dato <- 2
+								FinSi
+							Fin Para	
+						SINO
+							Escribir '                              'Sin saltar
+							Escribir "El DNI del usuario debe mayor a 100 mil y menor a 100 millones"	
+						FinSi
+						
+						Para Z<-0 Hasta LONGITUD_DNI Con Paso 1 Hacer
+							validador <- Subcadena(NUEVO_DNI,Z,1)
+							validador <- Minusculas(validador)
+							si validador == "a" o validador == "b" o validador == "c" o validador == "d" o validador == "e" o validador == "f" o validador == "g" o validador == "h" o validador == "i" o validador == "j" o validador == "k" o validador == "l" o validador == "m" o validador == "n" o validador == "o" o validador == "p" o validador == "q" o validador == "r" o validador == "s" o validador == "t" o validador == "u" o validador == "v" o validador == "w" o validador == "x" o validador == "y" o validador == "z" entonces
+								mal_dato <-3
+							FinSi
+						Fin Para
+						Si mal_dato == 3 Entonces
+							Escribir '                              'Sin saltar
+							Escribir "Los DNI no deben tener letras ni espacios"	
+						FinSi
+						
+						si mal_dato == 2 Entonces
+							Escribir '                              'Sin saltar
+							Escribir "El DNI ya existe, por favor ingrese otro"	
+						FinSi
+						
+					Hasta Que LONGITUD_DNI > 5 Y mal_dato < 1 Y LONGITUD_DNI < 9
+					Matriz[i,3] <- NUEVO_DNI
+					
+					Repetir
+						mal_dato <- 0
+						Escribir '                              'Sin saltar
+						Escribir '[4] Ingrese la contraseña: '
+						Escribir '                              'Sin saltar
+						Leer NUEVA_CONTRASENA
+						lONGITUD_CONTRASENA <- Longitud(NUEVA_CONTRASENA)
+						
+						SI lONGITUD_CONTRASENA < 4 Entonces
+							Escribir '                              'Sin saltar
+							Escribir "La contrasena debe tener minimo 4 caracteres"
+							mal_dato <- 1
+						FinSi
+					Hasta Que mal_dato <1 Y lONGITUD_CONTRASENA >= 4
+					
+					Matriz[i,4] <- NUEVA_CONTRASENA
+					
+					Repetir
+						mal_dato <-0
+						Escribir '                              'Sin saltar
+						Escribir '[5] Dinero a depositar: '
+						Escribir '                              'Sin saltar
+						Leer CUENTA_PESOS_CARACTER
+						
+						Para Z<-0 Hasta Longitud(CUENTA_PESOS_CARACTER) Con Paso 1 Hacer
+							validador <- Subcadena(CUENTA_PESOS_CARACTER,Z,1)
+							validador <- Minusculas(validador)
+							si validador == "a" o validador == "b" o validador == "c" o validador == "d" o validador == "e" o validador == "f" o validador == "g" o validador == "h" o validador == "i" o validador == "j" o validador == "k" o validador == "l" o validador == "m" o validador == "n" o validador == "o" o validador == "p" o validador == "q" o validador == "r" o validador == "s" o validador == "t" o validador == "u" o validador == "v" o validador == "w" o validador == "x" o validador == "y" o validador == "z" entonces
+								mal_dato <-3
+							FinSi
+						finpara
+												
+							si mal_dato < 1 Entonces
+								CUENTA_PESOS <- ConvertirANumero(CUENTA_PESOS_CARACTER)
+								Dinero[i] <- CUENTA_PESOS
+							SiNo
+								Escribir '                              'Sin saltar
+								Escribir "Solo puedes ingresar numeros"
+							finsi	
+								
+							si CUENTA_PESOS < 0 Entonces
+								Escribir '                              'Sin saltar
+								Escribir "Solo puedes ingresar numeros positivos"
+								mal_dato <- 1
+							FinSi
+
+					Hasta Que mal_dato < 1
+					
+					
+					
+					Matriz[i,6] <- "1"
+					
+					Escribir '                              'Sin saltar
+					Escribir '.--.----.----.----.----.----.----.--.'
+					Escribir '                              'Sin saltar
+					Escribir '(1) Para crear otro usuario o (2) para salir.'
+					Escribir '                              'Sin saltar
+					leer flag
+					
+					Si flag == 2 Entonces
+						i<-98
+					FinSi
+				FinSi
+			Fin Para
+		3:
+			//Con esta opciÓN podremos bloquear o desbloquear un usuario.
+			//Este ciclo, mide cuántos usuarios registrados hay en el sistema, encontrando la primera coincidencia... 
+			//...con "zxz" y almacenando en la variable "longitud_usuarios_registrado" el número.
+			Limpiar Pantalla
+			Para k<-1 Hasta 98 Con Paso 1 Hacer
+					Si Matriz[k,1] == 'zxz' Entonces
+						LONGITUD_USUARIOS_REGISTRADOS <- k
+						k <- 98
+					Fin Si
+			Fin Para
+			
+			//Pedimos al usuario el id que quiere modificar.
+			
+			Repetir
+				Escribir '-----------------------------------------------------------'
+				Escribir ' ..----.----.----.----.----.----.----.----.----.----.----..'
+				eSCRIBIR '         'Sin Saltar
+				Escribir 'Seleccione el ID del usuario a desbloquear'
+				Escribir ' ..----.----.----.----.----.----.----.----.----.----.----..'
+				Escribir '-----------------------------------------------------------'
+				Para i<-1 Hasta LONGITUD_USUARIOS_REGISTRADOS-1 Con Paso 1 Hacer				
+					SI Matriz[i,6] == "1" Entonces
+						ESTADO <- "Activo"
+					SiNo
+						ESTADO <-"Bloqueado"
+					Fin Si
+					Escribir '____________________________________________________________'
+					Escribir '[ID]: ' i ' Nombre Apellido: ' Matriz[i,1] ' ' Matriz[i,2] ' Estado: ' ESTADO
+					Escribir '____________________________________________________________'
+				Fin Para
+				Escribir '(0) Para cancelar.'
+				Leer ID_DESBLOQUEAR
+				
+				SI ID_DESBLOQUEAR > 0 Entonces
+					
+					SI Matriz[ID_DESBLOQUEAR,6] == "1" Entonces
+						ESTADO <- "Activo"
+						Escribir "El usuario " Matriz[ID_DESBLOQUEAR,1] " " Matriz[ID_DESBLOQUEAR,2] " actualmente se encuentra " ESTADO ", Desea cambiar su estado?"  
+						Escribir "1- SI"
+						Escribir "2- NO"
+						LEER CAMBIO_ESTADO
+						//Si se presiona 1 y el usuario esta activo.
+						Si CAMBIO_ESTADO == 1 Entonces
+							Matriz[ID_DESBLOQUEAR,6] <- "0"
+							ESTADO <- "Bloqueado"
+							Escribir "El usuario " Matriz[ID_DESBLOQUEAR,1] " " Matriz[ID_DESBLOQUEAR,2] " ahora esta " ESTADO
+						Fin Si
+					SiNo
+						Si Matriz[ID_DESBLOQUEAR,6] == "0" Entonces
+							ESTADO <- "Bloqueado"
+							Escribir "El usuario " Matriz[ID_DESBLOQUEAR,1] " " Matriz[ID_DESBLOQUEAR,2] " actualmente se encuentra " ESTADO ", Desea cambiar su estado?"
+							Escribir "1- SI"
+							Escribir "2- NO"
+							LEER CAMBIO_ESTADO
+							Si CAMBIO_ESTADO == 1 Entonces
+								Matriz[ID_DESBLOQUEAR,6] <- "1"
+								ESTADO <- "Activo"
+								Escribir "El usuario " Matriz[ID_DESBLOQUEAR,1] " " Matriz[ID_DESBLOQUEAR,2] " ahora esta " ESTADO
+							Fin Si
+						Fin si
+					FinSi
+				FinSi
+				
+			Hasta Que ID_DESBLOQUEAR < 1 Y ID_DESBLOQUEAR < LONGITUD_USUARIOS_REGISTRADOS
+			
+			
+				
+				//----------------------------------------------------------------------------
+				//----------------------------------------------------------------------------
+		4: 
+			Limpiar Pantalla
+			Para k<-1 Hasta 98 Con Paso 1 Hacer
+				Si Matriz[k,1] == 'zxz' Entonces
+					LONGITUD_USUARIOS_REGISTRADOS <- k
+					k <- 98
+				Fin Si
+			Fin Para
+			
+			Repetir
+				Escribir '-----------------------------------------------------------'
+				Escribir '..----.----.----.----.----.----.----.----.----.----.----..'
+				Escribir '  Seleccione el ID del usuario para revisar el historial'
+				Escribir '..----.----.----.----.----.----.----.----.----.----.----..'
+				Escribir '-----------------------------------------------------------'
+				Para i<-1 Hasta LONGITUD_USUARIOS_REGISTRADOS-1 Con Paso 1 Hacer
+					Escribir '____________________________________________________________'
+					Escribir '[ID]: ' i ' Nombre Apellido: ' Matriz[i,1] ' ' Matriz[i,2] ' DNI: ' Matriz[i,3]
+					Escribir '____________________________________________________________'
+				Fin Para
+				Escribir '(0)- Para salir'
+				Leer ID_HISTORIAL
+			Hasta Que ID_HISTORIAL  >= 0 Y ID_HISTORIAL <= LONGITUD_USUARIOS_REGISTRADOS-1
+			
+			SI ID_HISTORIAL > 0 Entonces
+				Para i<-0 Hasta 19 Con Paso 1 Hacer
+					si Historial[ID_HISTORIAL,i] <> 0 Entonces
+						si Historial[ID_HISTORIAL,i] < 0 Entonces
+							Escribir "Extracción: " Historial[ID_HISTORIAL,i]
+						sino 
+							Escribir "Ingreso: " Historial[ID_HISTORIAL,i]
+						FinSi
+					FinSi
+				Fin Para
+			FINSI
+				
+			
+			//------------------------------------------------------------------------///
+			//------------------------------------------------------------------------///
+		5:
+			//Modificar o editar los valores de los usuarios. 
+			//Primero obtenemos la cantidad de usuarios registrados.
+			Limpiar Pantalla
+			Para k<-1 Hasta 98 Con Paso 1 Hacer
+				Si Matriz[k,1] == 'zxz' Entonces
+					LONGITUD_USUARIOS_REGISTRADOS <- k
+					k <- 98
+				Fin Si
+			Fin Para
+			
+			//Pedimos al usuario el id que quiere modificar.
+			
+			//Con este ciclo nos aseguramos de que se escoja un usuario registrado.
+			Repetir
+				Escribir '--------------------------------------------------------------------------'
+				Escribir '..----.----.----.----.----.----.----.----.----.----.----.----.----.----..'
+				Escribir '                 Seleccione el ID del usuario a modificar'
+				Escribir '..----.----.----.----.----.----.----.----.----.----.----.----.----.----..'
+				Escribir '-------------------------------------------------------------------------'
+				Para i<-1 Hasta LONGITUD_USUARIOS_REGISTRADOS-1 Con Paso 1 Hacer
+					Escribir '_________________________________________________________________________'
+					Escribir '[ID]: ' i ' Nombre Apellido: ' Matriz[i,1] ' ' Matriz[i,2] ' DNI: ' Matriz[i,3] ' Contraseña: ' Matriz[i,4] 
+					Escribir '_________________________________________________________________________'
+				Fin Para
+				Escribir '(0)- Para salir'
+				Leer ID_DESBLOQUEAR
+			Hasta Que ID_DESBLOQUEAR  >= 0 Y ID_DESBLOQUEAR <= LONGITUD_USUARIOS_REGISTRADOS-1
+		
+			Repetir
+				Limpiar Pantalla
+				Escribir '-----------------------------------------------------------'
+				Escribir '..----.----.----.----.----.----.----.----.----.----.----..'
+				Escribir '            Seleccione la opción a modificar'
+				Escribir '..----.----.----.----.----.----.----.----.----.----.----..'
+				Escribir '-----------------------------------------------------------'
+				Escribir '            'Sin Saltar
+				Escribir '[1] Nombre: ' Matriz[ID_DESBLOQUEAR,1]
+				Escribir '            'Sin Saltar
+				Escribir '[2] Apellido: ' Matriz[ID_DESBLOQUEAR,2]
+				Escribir '            'Sin Saltar
+				Escribir '[3] DNI:' Matriz[ID_DESBLOQUEAR,3]
+				Escribir '            'Sin Saltar
+				Escribir '[4] Contraseña: ' Matriz[ID_DESBLOQUEAR,4]
+				Escribir '-----------------------------------------------------------'
+				Escribir '(5)- Salir'
+				Leer OPCION_A_MODIFICAR
+			Hasta Que OPCION_A_MODIFICAR >= 1 Y OPCION_A_MODIFICAR <= 5
+		
+			Segun OPCION_A_MODIFICAR Hacer
+				1:
+					Limpiar Pantalla
+					Escribir 'Nombre del usuario: ' Matriz[ID_DESBLOQUEAR,OPCION_A_MODIFICAR]
+					Escribir 'Ingrese el nombre nuevo nombre: ' 
+					Leer NUEVO_NOMBRE
+					Matriz[ID_DESBLOQUEAR,OPCION_A_MODIFICAR] <- NUEVO_NOMBRE
+					Escribir 'Nombre y apellido: ' Matriz[ID_DESBLOQUEAR,1] ' ' Matriz[ID_DESBLOQUEAR,2] ' DNI: ' Matriz[ID_DESBLOQUEAR,3] 
+
+				2:
+					Limpiar Pantalla
+					Escribir 'Apellido del usuario: ' Matriz[ID_DESBLOQUEAR,OPCION_A_MODIFICAR]
+					Escribir 'Ingrese el nuevo apellido: ' Sin Saltar 
+					Leer NUEVO_APELLIDO
+					Matriz[ID_DESBLOQUEAR,OPCION_A_MODIFICAR] <- NUEVO_APELLIDO
+					Escribir 'Nombre y apellido: ' Matriz[ID_DESBLOQUEAR,1] ' ' Matriz[ID_DESBLOQUEAR,2] ' DNI: ' Matriz[ID_DESBLOQUEAR,3] 
+				3:
+					Limpiar Pantalla
+					Escribir 'DNI del usuario: ' Matriz[ID_DESBLOQUEAR,OPCION_A_MODIFICAR]
+					Escribir 'Ingrese el nuevo DNI: ' Sin Saltar 
+					Leer NUEVO_DNI
+					Matriz[ID_DESBLOQUEAR,OPCION_A_MODIFICAR] <- NUEVO_DNI
+					Escribir 'Nombre y apellido: ' Matriz[ID_DESBLOQUEAR,1] ' ' Matriz[ID_DESBLOQUEAR,2] ' DNI: ' Matriz[ID_DESBLOQUEAR,3] 
+				4:
+					Limpiar Pantalla
+					Repetir
+						Escribir 'Ingrese la nueva contraseña: ' Sin Saltar
+						Leer NUEVA_CONTRASENA
+						Escribir 'Confirmar contraseña: ' Sin saltar
+						Leer CONFIRMAR_CONTRASENA
+						Si NUEVA_CONTRASENA == CONFIRMAR_CONTRASENA Entonces
+							Escribir "Contraseña modificada con exito!"
+							Matriz[ID_DESBLOQUEAR,OPCION_A_MODIFICAR] <- NUEVA_CONTRASENA
+						SiNo
+							Escribir "Las contraseñas no coinciden, intente nuevamente"
+						FinSi
+					Hasta Que NUEVA_CONTRASENA == CONFIRMAR_CONTRASENA
+				De Otro Modo:
+					Escribir "¡Hasta luego!"
+			Fin Segun
+			
+	Fin Segun
+FinSubProceso
+
+// Menu Principal de Usuario
+SubProceso MENU()
+	Limpiar Pantalla
+	Escribir ' -------------------------------------------------------------------------------------------------'
+	Escribir '^.................................................................................................'
+	Escribir '^    '
+	Escribir '^                    __  __                    _    _                      _'        
+	Escribir '^                   |  \/  |                  | |  | |                    (_)'       
+	Escribir '^                   | \  / | ___ _ __  _   _  | |  | |___ _   _  __ _ _ __ _  ___'   
+	Escribir '^                   | |\/| |/ _ \ ^_ \| | | | | |  | / __| | | |/ _` | ^__| |/ _ \'  
+	Escribir '^                   | |  | |  __/ | | | |_| | | |__| \__ \ |_| | (_| | |  | | (_) |' 
+	Escribir '^                   |_|  |_|\___|_| |_|\__,_|  \____/|___/\__,_|\__,_|_|  |_|\___/'  
+	Escribir '^                                                                                                 .'
+	Escribir '^..................................................................................................'Sin Saltar
+	Escribir '                           '
+	Escribir '^                                                                                                  '
+	Escribir '^..----.----.----.----.----.----.----.----.----.----.----.----.----.----.----.----.----.----.----..'
+	Escribir '^               ,.._.._...._...._.._,                            ,.._.._...._...._.._,          '
+	Escribir '^               [1] Visualizar Datos 'Sin Saltar
+	Escribir '                          'Sin Saltar
+	Escribir '  [2] Ingresar Dinero              '
+	Escribir '^               ,_.._...._...._.._..,                            ,_.._...._...._.._..,           '
+	Escribir '^                                                                                                 '
+	Escribir '^               ,.._.._...._...._.._,                            ,.._.._...._...._.._,          '
+	Escribir '^               [3] Extraer Dinero'Sin Saltar
+	Escribir '                            'Sin Saltar
+	Escribir '   [4] Transferencia '
+	Escribir '^               ,_.._...._...._.._..,                            ,_.._...._...._.._..,          '
+	Escribir '^                                                                                                  '
+	Escribir '^               ,.._.._...._....,                                ,.._.._...._....,  '
+	Escribir '^               [5] Historial  'Sin Saltar
+	Escribir '                               'Sin Saltar
+	Escribir '   [6] Salir'
+	Escribir '^               ,...._...._.._..,                                ,...._...._.._..,     '
+	Escribir '^..----.----.----.----.----.----.----.----.----.----.----.----.----.----.----.----.----.----.----..'
+	Escribir ' --------------------------------------------------------------------------------------------------'
+FinSubProceso
+
+//Funcion de mostrar datos de usuarios.
+SubProceso VisualizarDatos(Matriz,Dinero,ID)
+	Limpiar Pantalla
+	Escribir ' -------------------------------------------------------------------------------------------------'
+	Escribir '^.................................................................................................'
+	Escribir '^    '
+	Escribir '^                     __  __ _   _    _                      _'        
+	Escribir '^                    |  \/  (_) | |  | |                    (_)'       
+	Escribir '^                    | \  / |_| | |  | |___ _   _  __ _ _ __ _  ___'   
+	Escribir '^                    | |\/| | | | |  | / __| | | |/ _` | ^__| |/ _ \'  
+	Escribir '^                    | |  | | | | |__| \__ \ |_| | (_| | |  | | (_) |' 
+	Escribir '^                    |_|  |_|_|  \____/|___/\__,_|\__,_|_|  |_|\___/'  
+	Escribir '^                                                                                                 .'
+	Escribir '^..................................................................................................'
+	Escribir '^                                                                                                  '
+	Escribir '^..----.----.----.----.----.----.----.----.----.----.----.----.----.----.----.----.----.----.----..'
+	Escribir '^                ,.._.._...._...._.._,                                                             '
+	Escribir '^                |Nombre|: ',Matriz[ID,1],'.'
+	Escribir '^                ,_.._...._...._.._..,                            ,.._.._...._...._.._,            '
+	Escribir '^                                                                 |DNI|: ',Matriz[ID,3]        
+	Escribir '^                ,.._.._...._...._.._,                            ,_.._...._...._.._..,            '
+	Escribir '^                |Apellido|: ',Matriz[ID,2]
+	Escribir '^                ,_.._...._...._.._..,                            ,.._.._...._...._.._,            '
+	Escribir '^                                                                 |Password|: ********'
+	Escribir '^                ,.._.._...._...._.._,                            ,_.._...._...._.._..,            '
+	Escribir '^                |Saldo|: $ ',Dinero[ID]
+	Escribir '^                ,_.._...._...._.._..,                                                             '
+	Escribir '^..----.----.----.----.----.----.----.----.----.----.----.----.----.----.----.----.----.----.----..'
+	Escribir ' --------------------------------------------------------------------------------------------------'
+FinSubProceso
+
+//Funcion para ingresar dinero.
+SubProceso INGRESAR_DINERO(Dinero,ID,Historial)
+	Definir IngresoDinero Como Real
+	Definir Confir_Dinero,OpcIngreso,i Como Entero
+	Repetir
+		Repetir
+			cartel2(Dinero,ID)
+			Escribir '                              'Sin Saltar
+			Escribir '-Cuanto Dinero desea ingresar:'
+			Repetir
+				Escribir '                              'Sin Saltar
+				Leer IngresoDinero
+			Hasta Que IngresoDinero>=0
+			Escribir '                              'Sin Saltar
+			Escribir '1-Confirmar.'
+			Escribir '                              'Sin Saltar
+			Escribir '2-Reingresar.'
+			Repetir
+				Escribir '                              'Sin Saltar
+				Leer Confir_Dinero
+			Hasta Que Confir_Dinero==1 o Confir_Dinero==2
+		Hasta Que Confir_Dinero==1
+		
+		Dinero[ID]<-Dinero[ID]+IngresoDinero
+		
+		//Hacemos el historial, que detecta si esta en 0. Para el receptor va positivo y el emisor va negativo.
+		Para i<-0 Hasta 19 Con Paso 1 Hacer
+			Si Historial[ID,i] = 0 Entonces
+				Historial[ID,i] <- IngresoDinero
+				i<-19
+			Fin Si
+		Fin Para 
+		
+		cartel2(Dinero,ID)
+		Escribir '                              'Sin Saltar
+		Escribir '1-Seguir Ingresando.'
+		Escribir '                              'Sin Saltar
+		Escribir '2-Menu Principal.'
+		Repetir
+			Escribir '                              'Sin Saltar
+			Leer OpcIngreso
+			Si OpcIngreso<>1 o OpcIngreso<>2 Entonces
+				Escribir '                              'Sin Saltar
+				Escribir '<<<error-de-opcion>>'
+			Fin Si
+		Hasta Que OpcIngreso==1 o OpcIngreso==2
+	Hasta Que OpcIngreso==2
+FinSubProceso
+
+//Funcion para extraer dinero.
+SubProceso EXTRAER_DINERO(Dinero,ID,Historial)
+	Definir RetiroDinero Como Real
+	Definir Confir_Dinero,OpcIngreso,i Como Entero
+	Repetir
+		Repetir
+			cartel3(Dinero,ID)
+			Escribir '                              'Sin Saltar
+			Escribir '-¿Cuánto Dinero desea Retirar?:'
+			Repetir
+				Escribir '                              'Sin Saltar
+				Leer RetiroDinero
+				Si RetiroDinero>Dinero[ID] Entonces
+					Escribir '                              'Sin Saltar
+					Escribir '-¡Saldo Insuficiente!'
+				Fin Si
+			Hasta Que RetiroDinero>=0 y RetiroDinero<=Dinero[ID]
+			Escribir '                              'Sin Saltar
+			Escribir '1-Confirmar.'
+			Escribir '                              'Sin Saltar
+			Escribir '2-Reingresar.'
+			Repetir
+				Escribir '                              'Sin Saltar
+				Leer Confir_Dinero
+			Hasta Que Confir_Dinero==1 o Confir_Dinero==2
+		Hasta Que Confir_Dinero==1
+		
+		Dinero[ID]<-Dinero[ID]-RetiroDinero
+		
+		//Hacemos el historial, que detecta si esta en 0. Para el receptor va positivo y el emisor va negativo.
+		Para i<-0 Hasta 19 Con Paso 1 Hacer
+			Si Historial[ID,i] = 0 Entonces
+				Historial[ID,i] <- (RetiroDinero * (-1))
+				i<-19
+			Fin Si
+		Fin Para 
+		
+		cartel3(Dinero,ID)
+		Escribir '                              'Sin Saltar
+		Escribir '1-Seguir Retirando.'
+		Escribir '                              'Sin Saltar
+		Escribir '2-Menu Principal.'
+		Repetir
+			Escribir '                              'Sin Saltar
+			Leer OpcIngreso
+			Si OpcIngreso<>1 o OpcIngreso<>2 Entonces
+				Escribir '                              'Sin Saltar
+				Escribir '<<<Error-de-opcion>>'
+			Fin Si
+		Hasta Que OpcIngreso==1 o OpcIngreso==2
+	Hasta Que OpcIngreso==2
+FinSubProceso
+
+// Cartel de BANCO
+SubProceso CARTEL()
+	Limpiar Pantalla
+	
+	Escribir '    *******        *************    *****        ***    *************    *************'
+	Escribir '    **********     *************    ******       ***    *************    *************' 
+	Escribir '    ***     ***    ***       ***    *** ***      ***    ***              ***       ***'
+	Escribir '    ***     ***    ***       ***    ***  ***     ***    ***              ***       ***'
+	Escribir '    *********      *************    ***   ***    ***    ***              ***       ***'
+	Escribir '    **********     *************    ***    ***   ***    ***              ***       ***'
+	Escribir '    ***     ***    ***       ***    ***     ***  ***    ***              ***       ***'
+	Escribir '    ***     ***    ***       ***    ***      *** ***    ***              ***       ***'
+	Escribir '    **********     ***       ***    ***       ******    *************    *************'
+	Escribir '    *******        ***       ***    ***        *****    *************    *************'
+	Escribir ''
+FinSubProceso
+
+//CARTEL DE INGRESO DE DINERO
+SubProceso cartel2(Dinero,ID)
+	Limpiar Pantalla
+	Escribir '                             'Sin Saltar
+	Escribir ' -----------------------------------'Sin Saltar
+	Escribir '                              '
+	Escribir '                             'Sin Saltar
+	Escribir '|<<<<<<----INGRESAR-DINERO---->>>>>>|'Sin Saltar
+	Escribir '                              '
+	Escribir '                             'Sin Saltar
+	Escribir ' -----------------------------------'
+	Escribir '                              '
+	Escribir '                              '
+	Escribir '                              'Sin Saltar
+	Escribir '-Saldo: ',Dinero[ID]
+FinSubProceso
+
+//CARTEL DE EXTRACCION DE Dinero
+SubProceso cartel3(Dinero,ID)
+	Limpiar Pantalla
+	Escribir '                             'Sin Saltar
+	Escribir ' ----------------------------------'Sin Saltar
+	Escribir '                               '
+	Escribir '                             'Sin Saltar
+	Escribir '|<<<<<<----RETIRAR-DINERO---->>>>>>|'Sin Saltar
+	Escribir '                              '
+	Escribir '                             'Sin Saltar
+	Escribir ' ----------------------------------'
+	Escribir '                              '
+	Escribir '                              '
+	Escribir '                              'Sin Saltar
+	Escribir '-Saldo: ',Dinero[ID]
+FinSubProceso
+
+//CARTEL DE TRANSFERENCIAS
+SubProceso cartel4(Dinero,ID)
+	Limpiar Pantalla
+	Escribir '                             'Sin Saltar
+	Escribir ' ----------------------------------'Sin Saltar
+	Escribir '                               '
+	Escribir '                             'Sin Saltar
+	Escribir '|<<<<<<----TRANSFERENCIAS---->>>>>>|'Sin Saltar
+	Escribir '                              '
+	Escribir '                             'Sin Saltar
+	Escribir ' ----------------------------------'
+	Escribir '                              '
+	Escribir '                              '
+	Escribir '                              'Sin Saltar
+	Escribir '-Saldo: ',Dinero[ID]
+FinSubProceso
+
+//FUNCION PARA TRANSFERENCIAS
+SubProceso TRANSFERENCIAS(Matriz,Dinero,ID,Historial)
+	
+	Definir Trans_Dinero Como Real
+	Definir Confir_Dinero,OpcIngreso,cont_trans,ID_Receptor,j,i Como Entero
+	Definir DNIreceptor como cadena
+	
+	Confir_Dinero<-0
+	
+	Repetir
+		Repetir
+			cartel4(Dinero,ID)
+			Escribir '                              'Sin Saltar
+			Escribir '-Ingrese el DNI de la Persona de Destino:'
+			Escribir '                              'Sin Saltar
+			Leer DNIreceptor
+			cont_trans<-0
+			
+			Para j<-0 Hasta 98 Con Paso 1 Hacer
+				Si Matriz[j,3]==DNIreceptor Entonces
+					cont_trans<-cont_trans+1
+					ID_Receptor<-j
+				Fin Si
+			Fin Para
+			
+			Si cont_trans==1 Entonces
+				Escribir '                              'Sin Saltar
+				Escribir '-¿Cuánto Dinero desea Transferir?:'
+				Repetir
+					Escribir '                              'Sin Saltar
+					Leer Trans_Dinero
+					Si Trans_Dinero>Dinero[ID] Entonces
+						Escribir '                              'Sin Saltar
+						Escribir '-¡Saldo Insuficiente!'
+					Fin Si
+				Hasta Que Trans_Dinero>0 y Trans_Dinero<=Dinero[ID]
+				Escribir ''
+				Escribir '                              'Sin Saltar
+				Escribir '1-Confirmar.'
+				Escribir '                              'Sin Saltar
+				Escribir '2-Reingresar.'
+				Repetir
+					Escribir '                              'Sin Saltar
+					Leer Confir_Dinero
+				Hasta Que Confir_Dinero==1 o Confir_Dinero==2
+				
+				Dinero[ID]<-Dinero[ID]-Trans_Dinero
+				Dinero[ID_Receptor]<-Dinero[ID_Receptor]+Trans_Dinero
+				
+				//Hacemos el historial, que detecta si esta en 0. Para el receptor va positivo y el emisor va negativo.
+				Para i<-0 Hasta 19 Con Paso 1 Hacer
+					Escribir "ID_Receptor-> " ID_Receptor
+					Si Historial[ID_Receptor,i] = 0 Entonces
+						Historial[ID_Receptor,i] <- Trans_Dinero
+						i<-19
+					Fin Si
+				Fin Para 
+				
+				Para j<-0 Hasta 19 Con Paso 1 Hacer
+					Escribir "ID -> " ID
+					Si Historial[ID,j] = 0 Entonces
+						Historial[ID,j] <- (Trans_Dinero * (-1))
+						j <-19
+					FinSi
+				Fin Para 
+			SiNo
+				Escribir '                              'Sin Saltar
+				Escribir '-¡El Usuario NO Existe!'
+				Esperar 5 Segundos
+			Fin Si
+			
+		Hasta Que Confir_Dinero == 1
+		
+		cartel4(Dinero,ID)
+		Escribir '                              'Sin Saltar
+		Escribir '1-Seguir Transfiriendo.'
+		Escribir '                              'Sin Saltar
+		Escribir '2-Menu Principal.'
+		
+		Repetir
+			Escribir '                              'Sin Saltar
+			Leer OpcIngreso
+			Si OpcIngreso<>1 o OpcIngreso<>2 Entonces
+				Escribir '                              'Sin Saltar
+				Escribir '<<<Error-de-opcion>>'
+			Fin Si
+		Hasta Que OpcIngreso==1 o OpcIngreso==2
+	Hasta Que OpcIngreso==2
+FinSubProceso
+
+//Funcion de historial
+SubProceso HISTORIAL_USUARIO(Historial,ID,Dinero)
+	Definir i,OPC_Historial Como Entero
+	Repetir
+		Limpiar Pantalla
+		Escribir '                             'Sin Saltar
+		Escribir ' -----------------------------------'Sin Saltar
+		Escribir '                              '
+		Escribir '                             'Sin Saltar
+		Escribir '|<<<<<<-------HISTORIAL------->>>>>>|'Sin Saltar
+		Escribir '                              '
+		Escribir '                             'Sin Saltar
+		Escribir ' -----------------------------------'
+		Escribir '                              '
+		Escribir '                              '
+		Escribir '                              'Sin Saltar
+		Escribir '-Saldo: ',Dinero[ID]
+		Escribir ''
+		
+		Para i<-0 Hasta 19 Con Paso 1 Hacer
+			si Historial[ID,i] <> 0 Entonces
+				Escribir '                              'Sin Saltar
+				Escribir i,'- 'Sin Saltar
+				si Historial[ID,i] < 0 Entonces
+					Escribir "Extracción: " Historial[ID,i]
+				sino 
+					Escribir "Ingreso: " Historial[ID,i]
+				FinSi
+			FinSi
+		Fin Para
+		
+		Escribir ''
+		Escribir '                              'Sin Saltar
+		Escribir '1-Menu Principal.'
+
+			Escribir '                              'Sin Saltar
+			Leer OPC_Historial
+			Si OPC_Historial<>1 Entonces
+				Escribir '                              'Sin Saltar
+				Escribir '<<<error-de-opcion>>'
+				Escribir '                              'Sin Saltar
+				Escribir '<<<Presione-Una-Tecla>>'
+				Esperar Tecla
+			Fin Si
+	Hasta Que OPC_Historial==1
+
+FinSubProceso
+
+SubProceso CARTEL2_0()
+	Definir i,z como Entero
+	z<-10
+    Para i<-0 Hasta 5 Con Paso 1 Hacer
+		Limpiar Pantalla
+		Esperar z Milisegundos
+		Escribir '    *******        *************    *****        ***    *************    *************'
+		Esperar z Milisegundos
+		Escribir '    **********     *************    ******       ***    *************    *************' 
+		Esperar z Milisegundos
+		Escribir '    ***     ***    ***       ***    *** ***      ***    ***              ***       ***'
+		Esperar z Milisegundos
+		Escribir '    ***     ***    ***       ***    ***  ***     ***    ***              ***       ***'
+		Esperar z Milisegundos
+		Escribir '    *********      *************    ***   ***    ***    ***              ***       ***'
+		Esperar z Milisegundos
+		Escribir '    **********     *************    ***    ***   ***    ***              ***       ***'
+		Esperar z Milisegundos
+		Escribir '    ***     ***    ***       ***    ***     ***  ***    ***              ***       ***'
+		Esperar z Milisegundos
+		Escribir '    ***     ***    ***       ***    ***      *** ***    ***              ***       ***'
+		Esperar z Milisegundos
+		Escribir '    **********     ***       ***    ***       ******    *************    *************'
+		Esperar z Milisegundos
+		Escribir '    *******        ***       ***    ***        *****    *************    *************'
+		Esperar z Milisegundos
+	Fin Para
+	Para i<-0 Hasta 5 Con Paso 1 Hacer
+		Limpiar Pantalla
+		Escribir '    *******        '
+		Escribir '    **********     ' 
+		Escribir '    ***     ***    '
+		Escribir '    ***     ***    '
+		Escribir '    *********      '
+		Escribir '    **********     '
+		Escribir '    ***     ***    '
+		Escribir '    ***     ***    '
+		Escribir '    **********     '
+		Escribir '    *******        '
+		Esperar z Milisegundos
+		
+		Limpiar Pantalla
+		Escribir '    *******        *************    '
+		Escribir '    **********     *************    ' 
+		Escribir '    ***     ***    ***       ***    '
+		Escribir '    ***     ***    ***       ***    '
+		Escribir '    *********      *************    '
+		Escribir '    **********     *************    '
+		Escribir '    ***     ***    ***       ***    '
+		Escribir '    ***     ***    ***       ***    '
+		Escribir '    **********     ***       ***    '
+		Escribir '    *******        ***       ***    '
+		Esperar z Milisegundos
+		
+		Limpiar Pantalla
+		Escribir '    *******        *************    *****        ***    '
+		Escribir '    **********     *************    ******       ***    ' 
+		Escribir '    ***     ***    ***       ***    *** ***      ***    '
+		Escribir '    ***     ***    ***       ***    ***  ***     ***    '
+		Escribir '    *********      *************    ***   ***    ***    '
+		Escribir '    **********     *************    ***    ***   ***    '
+		Escribir '    ***     ***    ***       ***    ***     ***  ***    '
+		Escribir '    ***     ***    ***       ***    ***      *** ***    '
+		Escribir '    **********     ***       ***    ***       ******    '
+		Escribir '    *******        ***       ***    ***        *****    '
+		Esperar z Milisegundos
+		
+		Limpiar Pantalla
+		Escribir '    *******        *************    *****        ***    *************    '
+		Escribir '    **********     *************    ******       ***    *************    ' 
+		Escribir '    ***     ***    ***       ***    *** ***      ***    ***              '
+		Escribir '    ***     ***    ***       ***    ***  ***     ***    ***              '
+		Escribir '    *********      *************    ***   ***    ***    ***              '
+		Escribir '    **********     *************    ***    ***   ***    ***              '
+		Escribir '    ***     ***    ***       ***    ***     ***  ***    ***              '
+		Escribir '    ***     ***    ***       ***    ***      *** ***    ***              '
+		Escribir '    **********     ***       ***    ***       ******    *************    '
+		Escribir '    *******        ***       ***    ***        *****    *************    '
+		Esperar z Milisegundos
+		
+		Limpiar Pantalla
+		Escribir '    *******        *************    *****        ***    *************    *************'
+		Escribir '    **********     *************    ******       ***    *************    *************' 
+		Escribir '    ***     ***    ***       ***    *** ***      ***    ***              ***       ***'
+		Escribir '    ***     ***    ***       ***    ***  ***     ***    ***              ***       ***'
+		Escribir '    *********      *************    ***   ***    ***    ***              ***       ***'
+		Escribir '    **********     *************    ***    ***   ***    ***              ***       ***'
+		Escribir '    ***     ***    ***       ***    ***     ***  ***    ***              ***       ***'
+		Escribir '    ***     ***    ***       ***    ***      *** ***    ***              ***       ***'
+		Escribir '    **********     ***       ***    ***       ******    *************    *************'
+		Escribir '    *******        ***       ***    ***        *****    *************    *************'
+		Esperar z Milisegundos
+	Fin Para
+FinSubProceso
+	
